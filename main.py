@@ -102,9 +102,10 @@ class Player():
 
         # draw player onto screen
         window.blit(self.image, self.rect)
-        pygame.draw.rect(window, (255,255,255), self.rect, 2)
+        pygame.draw.rect(window, (255, 255, 255), self.rect, 2)
 
         return game
+
 
 def make_grid():
     for line in range(0, 10):
@@ -160,25 +161,22 @@ class Obstacle(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x += self.move_direction
-        self.move_counter += 0.25
-        if abs(self.move_counter) > 50:
+        self.move_counter += 0.125
+        if abs(self.move_counter) > 25:
             self.move_direction *= -1
-            self.move_counter *= -0.25
+            self.move_counter *= -0.125
         pygame.draw.rect(window, (255, 255, 255), self.rect)
 
 
-map_val = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 2, 2, 0, 2, 2, 0, 0, 0],
-    [0, 2, 1, 1, 2, 1, 1, 2, 0, 0],
-    [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
-    [0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 3, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-]
+def generate_map():
+    cols = 10
+    rows = 10
+    empty_map = [[[2] * cols] * rows]
+
+    return empty_map
+
+
+map_val = generate_map()
 
 player = Player(100, height - 130)
 
