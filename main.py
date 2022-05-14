@@ -1,6 +1,8 @@
+import random
 import sys
 
 import pygame
+import time
 from pygame.locals import *
 
 pygame.init()
@@ -50,19 +52,19 @@ class Player():
         if game == 0:
             key = pygame.key.get_pressed()
             if key[pygame.K_UP] and self.jumped == False:
-                self.vel_y = -8
+                self.vel_y = -12
                 self.jumped = True
             if key[pygame.K_UP] == False:
                 self.jumped = False
             if key[pygame.K_LEFT]:
-                dx -= 1
+                dx -= 4
             if key[pygame.K_RIGHT]:
-                dx += 1
+                dx += 4
 
             # add gravity
-            self.vel_y += 0.25
-            if self.vel_y > 1:
-                self.vel_y = 1
+            self.vel_y += 1
+            if self.vel_y > 3:
+                self.vel_y = 3
             dy += self.vel_y
 
             # check for collision
@@ -168,28 +170,52 @@ class Obstacle(pygame.sprite.Sprite):
         pygame.draw.rect(window, (255, 255, 255), self.rect)
 
 
+
 def generate_map():
     cols = 10
     rows = 10
-    empty_map = [[[2] * cols] * rows]
+    empty_map = [[0 for y in range(cols)] for x in range(rows)]
 
-    return empty_map
+    # create floor
+    for i in range(cols):
+        empty_map[rows - 1][i] = 2
+
+    start_map = empty_map
+
+    return start_map
 
 
-map_val = generate_map()
+
+
+def update_map(current, total_time, prev_update):
+    new_val = current
+    if total_time - 500 > prev_update:
+        new_val[4][random.randint(0, 9)] = 1
+        prev_update = total_time
+    return new_val, prev_update
+
 
 player = Player(100, height - 130)
 
 obstacle_group = pygame.sprite.Group()
 
+run = True
+total_time = 0
+prev_update = 0
+map_val = generate_map()
 env = Map(map_val)
 
-run = True
 while run:
-
+    total_time += clock.get_time()
+    clock.tick(60)
     window.blit(background, (0, 0))
     env.draw()
     if game_over == 0:
+        print(clock.get_time())
+        map_val_new = update_map(map_val, total_time, prev_update)
+        prev_update = map_val_new[1]
+        env = Map(map_val_new[0])
+        env.draw()
         obstacle_group.update()
     obstacle_group.draw(window)
     game_over = player.update(game_over)
