@@ -18,6 +18,7 @@ pygame.display.set_caption('Psycho Runner')
 
 game_over = 0
 tile_dim = 50
+score = 0
 
 font = pygame.font.Font(None, 32)
 
@@ -143,6 +144,9 @@ class Map():
                 if tile == 3:
                     obstacle = Obstacle(col_val * tile_dim, row_val * tile_dim + 15)
                     obstacle_group.add(obstacle)
+                if tile == 4:
+                    gem = Gem(col_val * tile_dim + (tile_dim // 2), row_val * tile_dim + (tile_dim // 2))
+                    gem_group.add(gem)
                 col_val += 1
             row_val += 1
 
@@ -163,11 +167,20 @@ class Obstacle(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x += self.move_direction
-        self.move_counter += 0.125
+        self.move_counter += 12
         if abs(self.move_counter) > 25:
             self.move_direction *= -1
-            self.move_counter *= -0.125
+            self.move_counter *= -12
         pygame.draw.rect(window, (255, 255, 255), self.rect)
+
+
+class Gem(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        img = pygame.image.load('gem.png')
+        self.image = pygame.transform.scale(img, (tile_dim // 2, tile_dim // 2))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
 
 
 def generate_map():
@@ -195,8 +208,10 @@ def update_map(current, total_time, prev_update):
         obs_prob = random.randint(0, 99)
         if new_val[ran_col][ran_row] != 1:
             new_val[ran_col][ran_row] = 2
-            if obs_prob > 80:
+            if obs_prob > 90:
                 new_val[ran_col][ran_row] = 3
+            elif 80 > obs_prob > 60:
+                new_val[ran_col][ran_row] = 4
         else:
             new_val[ran_col][ran_row - 1] = 2
         prev_update = total_time
@@ -206,6 +221,16 @@ def update_map(current, total_time, prev_update):
 player = Player(100, height - 130)
 
 obstacle_group = pygame.sprite.Group()
+gem_group = pygame.sprite.Group()
+
+score_gem = Gem(tile_dim // 2, tile_dim // 2)
+gem_group.add(score_gem)
+
+
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    window.blit(img, (x, y))
+
 
 run = True
 total_time = 0
@@ -219,13 +244,18 @@ while run:
     window.blit(background, (0, 0))
     env.draw()
     if game_over == 0:
-        print(clock.get_time())
+        # print(clock.get_time())
         map_val_new = update_map(map_val, total_time, prev_update)
         prev_update = map_val_new[1]
         env = Map(map_val_new[0])
         env.draw()
-        obstacle_group.update()
+    obstacle_group.update()
+    if pygame.sprite.spritecollide(player, gem_group, True):
+        score += 1
+
+    draw_text('X ' + str(score), pygame.font.SysFont('Bauhaus 93', 30), (255, 255, 255), tile_dim - 10, 10)
     obstacle_group.draw(window)
+    gem_group.draw(window)
     game_over = player.update(game_over)
     if game_over == -1:
         window.blit(end_text, end_rect)
