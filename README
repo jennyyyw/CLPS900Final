@@ -1,0 +1,31 @@
+Psycho Runner README
+
+-INTRO:
+Psycho Runner is a platformer game where you are a psycho minion
+in an alien planet who tries to get gems and survive for as long
+as you can while poisonous slimes try to kill you!
+
+The low gravity and psycho minion suit allow for continuous jumping.
+
+-RUN:
+To run the game, run main.py and the game window will popup.
+
+-CONTROLS:
+Move Left = Left Arrow
+Move Right = Right Arrow
+Jump = Up Arrow
+
+-MATERIALS & METHODS:
+This game was created using pygame, a cross-platform set of Python modules.
+The graphics used in the game were from an open-source assets library.
+For the pseudorandom generation of the blocks, the random package in python
+was used for.
+For the frames and timing, the clock package was used, which controls the
+update speed for the program.
+
+Due to the use of the clock package, the numerical variables for movement
+and platform generation speed were extremely hard to tweak, resulting in
+bugs in the generation of new blocks. Another issue was the fact that
+sprites in groups are not tracked by location which means that combined
+with the continuously proceeding platform, the sprites are unable to be
+located on the main map and removed completed, only killed temporarily.

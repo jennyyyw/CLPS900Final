@@ -183,8 +183,7 @@ def update_map(current, total_time, prev_update):
         if new_val[ran_col][ran_row] == 0:
             new_val[ran_col][ran_row] = 2
             if obs_prob > 80:
-                if new_val[ran_col + 1][ran_row] == 2:
-                    new_val[ran_col][ran_row] = 3
+                new_val[ran_col][8] = 3
             elif 80 > obs_prob > 60:
                 new_val[ran_col][ran_row] = 4
         prev_update = total_time
@@ -217,7 +216,6 @@ while run:
     clock.tick(60)
     window.blit(background, (0, 0))
     if game_over == 0:
-        score += 1
         map_val_new = update_map(map_val, total_time, prev_update)
         prev_update = map_val_new[1]
         env = Map(map_val_new[0])
