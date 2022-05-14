@@ -52,7 +52,7 @@ class Player():
         if game == 0:
             key = pygame.key.get_pressed()
             if key[pygame.K_UP] and self.jumped == False:
-                self.vel_y = -12
+                self.vel_y = -15
                 self.jumped = True
             if key[pygame.K_UP] == False:
                 self.jumped = False
@@ -62,9 +62,9 @@ class Player():
                 dx += 4
 
             # add gravity
-            self.vel_y += 1
-            if self.vel_y > 3:
-                self.vel_y = 3
+            self.vel_y += 2
+            if self.vel_y > 3.5:
+                self.vel_y = 3.5
             dy += self.vel_y
 
             # check for collision
