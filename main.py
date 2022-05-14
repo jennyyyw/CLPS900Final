@@ -199,20 +199,22 @@ def generate_map():
 
 def update_map(current, total_time, prev_update):
     new_val = current
+    gem_group.empty()
+    obstacle_group.empty()
     if total_time - 500 > prev_update:
         for i in range(0, 9):
             for j in range(0, 9):
-                new_val[i][j] = new_val[i][j + 1]
+                    new_val[i][j] = new_val[i][j + 1]
         ran_col = random.randint(0, 8)
         ran_row = random.randint(5, 8)
         obs_prob = random.randint(0, 99)
-        if new_val[ran_col][ran_row] != 1:
+        if new_val[ran_col][ran_row] == 0:
             new_val[ran_col][ran_row] = 2
             if obs_prob > 90:
                 new_val[ran_col][ran_row] = 3
             elif 80 > obs_prob > 60:
                 new_val[ran_col][ran_row] = 4
-        else:
+        elif new_val[ran_col][ran_row] == 2:
             new_val[ran_col][ran_row - 1] = 2
         prev_update = total_time
     return new_val, prev_update
