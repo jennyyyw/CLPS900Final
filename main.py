@@ -52,7 +52,7 @@ class Player():
         if game == 0:
             key = pygame.key.get_pressed()
             if key[pygame.K_UP] and self.jumped == False:
-                self.vel_y = -15
+                self.vel_y = -18
                 self.jumped = True
             if key[pygame.K_UP] == False:
                 self.jumped = False
@@ -170,7 +170,6 @@ class Obstacle(pygame.sprite.Sprite):
         pygame.draw.rect(window, (255, 255, 255), self.rect)
 
 
-
 def generate_map():
     cols = 10
     rows = 10
@@ -185,12 +184,21 @@ def generate_map():
     return start_map
 
 
-
-
 def update_map(current, total_time, prev_update):
     new_val = current
     if total_time - 500 > prev_update:
-        new_val[4][random.randint(0, 9)] = 1
+        for i in range(0, 9):
+            for j in range(0, 9):
+                new_val[i][j] = new_val[i][j + 1]
+        ran_col = random.randint(0, 8)
+        ran_row = random.randint(5, 8)
+        obs_prob = random.randint(0, 99)
+        if new_val[ran_col][ran_row] != 1:
+            new_val[ran_col][ran_row] = 2
+            if obs_prob > 80:
+                new_val[ran_col][ran_row] = 3
+        else:
+            new_val[ran_col][ran_row - 1] = 2
         prev_update = total_time
     return new_val, prev_update
 
